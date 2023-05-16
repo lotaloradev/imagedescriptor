@@ -21,6 +21,5 @@ async def request(url: str, method: str = "GET", body: Optional[str] = None,
     if headers:
         kwargs["headers"] = headers
     kwargs.update(fetch_kwargs)
-    print("Getting response")
     response = await pyfetch(url, **kwargs)
     return response
