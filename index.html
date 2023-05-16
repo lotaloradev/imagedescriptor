@@ -10,7 +10,7 @@
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
     <py-config>
       [[fetch]]
-      files = ["/request.py"]
+      files = ["./request.py"]
     </py-config>
     <title>Image descriptor</title>
 </head>
@@ -23,16 +23,24 @@
         print("post")
         baseurl = "https://jsonplaceholder.typicode.com"
         # POST
+        headers = {"Content-type": "application/json"}
         body = json.dumps({"image":img })
         new_post = await request(f"{baseurl}/posts", body=body, method="POST", headers=headers)
-        print(f"POST request=> status:{new_post.status}, json:{await new_post.json()}")
+        data = await new_post.json()
+        print(f"POST request=> status:{new_post.status}, json:{data}")
+        description_div = Element('about')
+        description_div.element.value = "some text"
 
     def processImage(event,data,url):
         manual_div = Element("image-display")
+        manual_div.element.innerHTML = '<img src="#" id="image-preview"/>'
         img = Element("image-preview")
         img.element.src = url
         print(url)
         asyncio.ensure_future(imageRequest(data))
+</py-script>
+<py-script>
+
 </py-script>
 <script>
     function mapImage(event){
@@ -41,9 +49,7 @@
         const reader = new FileReader();
         reader.onload = function(event) {
             const fileURL = event.target.result;
-            
             const url = URL.createObjectURL(selectedFile);
-            console.log(fileURL);
             const process = pyscript.interpreter.globals.get('processImage') //grab python's 'sorted' function
             process(event,fileURL,url)
         };
@@ -76,7 +82,6 @@
                 </div>
             </div>
             <div id="image-display">
-            <img src="#" id='image-preview'/>
             </div>
         </div>
         <div class="col">
